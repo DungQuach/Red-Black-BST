@@ -1,4 +1,10 @@
-﻿  BST.cpp
-c:\users\t_quacd\desktop\git\red-black-bst\bst\bst\bst.cpp(146): warning C4715: 'BST::searchNode': not all control paths return a value
-  BST.vcxproj -> C:\Users\t_quacd\Desktop\Git\Red-Black-BST\BST\x64\Debug\BST.exe
-  BST.vcxproj -> C:\Users\t_quacd\Desktop\Git\Red-Black-BST\BST\x64\Debug\BST.pdb (Partial PDB)
+﻿  Node.cpp
+  main.cpp
+  BST.cpp
+  Generating Code...
+c:\users\t_quacd\myproject\red-black-bst\bst\bst\bst.cpp(211): warning C4715: 'BST::searchNode': not all control paths return a value
+c:\users\t_quacd\myproject\red-black-bst\bst\bst\bst.cpp(276): warning C4715: 'BST::findMax': not all control paths return a value
+c:\users\t_quacd\myproject\red-black-bst\bst\bst\bst.cpp(285): warning C4715: 'BST::findMin': not all control paths return a value
+  LINK : C:\Users\t_quacd\MyProject\Red-Black-BST\BST\x64\Debug\BST.exe not found or not built by the last incremental link; performing full link
+  BST.vcxproj -> C:\Users\t_quacd\MyProject\Red-Black-BST\BST\x64\Debug\BST.exe
+  BST.vcxproj -> C:\Users\t_quacd\MyProject\Red-Black-BST\BST\x64\Debug\BST.pdb (Partial PDB)

@@ -16,60 +16,102 @@ void main()
 		std::cout << "3. Delete value\n";
 		std::cout << "4. Search for value\n";
 		std::cout << "5. Find the successor\n";
+		std::cout << "6. Find the predecessor\n";
 		std::cout << "7. Return root\n";
+		std::cout << "8. Delete the value\n";
+		std::cout << "9. Clear the tree\n";
+		std::cout << "Your choice: ";
 		std::cin >> select;
 		std::cout << std::endl;
 		switch (select)
 		{
-			case 0:
-			{
-				flag = false;
-				break; 
-			}
-			case 1:
-			{
-				int value;
-				std::cout << "Value of new node: ";
-				std::cin >> value;
-				control->Insert(value);
-				break;
-			}
-			case 2:
-			{
-				control->Travel();
-				std::cout << std::endl;
-			}
-			case 3:
-			{
-
-				break;
-			}
-			case 4:
-			{
-				int value;
-				std::cout << "Value for search: ";
-				std::cin >> value;
-				control->Search(value);
-				break;
-			}
-			case 5:
-			{
-				/*int value;
-				std::cout << "Value for finding: ";
-				std::cin >> value;*/
-				control->Min();
-				break;
-			}
-			case 7:
-			{
-				control->ReturnRoot();
-				std::cout << std::endl;
-				break;
-			}
-
-			default:
-				break;
+		case 0:
+		{
+			flag = false;
+			break;
 		}
+		case 1:
+		{
+			int value;
+			std::cout << "Value of new node: ";
+			std::cin >> value;
+			control->Insert(value);
+			break;
+		}
+		case 2:
+		{
+			control->Travel();
+		}
+		case 3:
+		{
+
+			break;
+		}
+		case 4:
+		{
+			int value;
+			std::cout << "Value for searching: ";
+			std::cin >> value;
+			control->Search(value);
+			break;
+		}
+		case 5:
+		{
+			int value;
+			std::cout << "Value for finding: ";
+			std::cin >> value;
+			control->Successor(value);
+			break;
+		}
+		case 6:
+		{
+			int value;
+			std::cout << "Value for finding: ";
+			std::cin >> value;
+			control->Predecessor(value);
+			break;
+		}
+		case 7:
+		{
+			Node* result = control->ReturnRoot();
+			if (!result)
+				std::cout << "The tree has not been init\n";
+			else
+				std::cout << "Root is " << result->key << std::endl;
+			break;
+		}
+		case 8:
+		{
+			if (control->IsEmpty())
+				std::cout << "No element for deletion\n";
+			else
+			{
+				int value;
+				std::cout << "Value for deleting: ";
+				std::cin >> value;
+				{
+					Node* ref = control->Search(value);
+					if (!ref)
+						std::cout << "No found matched\n";
+					else
+						control->Delete(ref);
+					std::cout << "Removed Done\n";
+				}
+			}
+			break;
+		}
+		case 9:
+		{
+			control->ClearTree();
+			if (control->IsEmpty())
+				std::cout << "Cleared" << std::endl;
+			break;
+		}
+
+		default:
+			break;
+		}
+		std::cout << std::endl;
 	}
 
 

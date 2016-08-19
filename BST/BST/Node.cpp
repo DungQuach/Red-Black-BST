@@ -2,6 +2,12 @@
 #include <iostream>
 
 
+Node::Node()
+{
+	left = nullptr;
+	right = nullptr;
+	parent = nullptr;
+}
 
 Node::Node(int value)
 {
