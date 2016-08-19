@@ -7,4 +7,5 @@ public:
 	Node *right;
 	Node *parent;
 	Node(int value);
+	Node();
 };
