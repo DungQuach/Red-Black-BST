@@ -1,8 +1,14 @@
 #include "BST.h"
 #include "Node.h"
 #include <iostream>
+#include "color.h"
 
 //public method
+BST::BST()
+{
+	NIL = nullptr;
+	NIL->setColor(color::BLACK);
+}
 void BST::ClearTree()
 {
 	root = nullptr;
@@ -12,7 +18,10 @@ void BST::Insert(int value)
 	if (root)
 		insertNode(root, value);
 	else
+	{
 		root = new Node(value);
+		root->parent = NIL;
+	}
 }
 void BST::Travel()
 {
@@ -96,6 +105,8 @@ void BST::insertNode(Node* root, int value)
 		{
 			root->right = new Node(value);
 			root->right->parent = root;
+			root->right->right = NIL;
+			root->right->left = NIL;
 		}
 		else
 			insertNode(root->right, value);
@@ -106,6 +117,8 @@ void BST::insertNode(Node* root, int value)
 		{
 			root->left = new Node(value);
 			root->left->parent = root;
+			root->left->right = NIL;
+			root->left->left = NIL;
 		}
 		else
 			insertNode(root->left, value);
@@ -116,10 +129,7 @@ void BST::findSuccessor(Node* root, int value)
 {
 	Node*current = searchNode(root, value);
 	if (!current)
-	{
-		std::cout << "No found matched";
 		return;
-	}
 	if (value == (findMax(root)->key))
 	{
 		std::cout << "This is the largest element" << std::endl;
@@ -153,10 +163,7 @@ void BST::findPredecessor(Node* root, int value)
 {
 	Node*current = searchNode(root, value);
 	if (!current)
-	{
-		std::cout << "No found matched";
 		return;
-	}
 	if (value == (findMin(root)->key))
 	{
 		std::cout << "This is the smallest element" << std::endl;

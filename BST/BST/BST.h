@@ -3,6 +3,8 @@
 class BST
 {
 private:
+	BST();
+	Node* NIL;
 	void insertNode(Node*, int);
 	void travel(Node*);
 	Node* root;

@@ -16,5 +16,13 @@ Node::Node(int value)
 	right = nullptr;
 	parent = nullptr;
 }
+color Node::getColor()
+{
+	return c;
+}
+void Node::setColor(color val)
+{
+	c = val;
+}
 
 
