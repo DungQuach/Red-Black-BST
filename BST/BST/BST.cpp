@@ -1,8 +1,22 @@
 #include "BST.h"
 #include "Node.h"
 #include <iostream>
+#include <algorithm>
+#include "color.h"
 
 //public method
+int BST::HeightofTree(Node* root)
+{
+	if (root == NIL)
+		return 0;
+	else
+		return 1 + std::max_element(HeightofTree(root->right), HeightofTree(root->left));
+}
+BST::BST()
+{
+	NIL = new Node();
+	NIL->setColor(color::BLACK);
+}
 void BST::ClearTree()
 {
 	root = nullptr;
@@ -12,7 +26,13 @@ void BST::Insert(int value)
 	if (root)
 		insertNode(root, value);
 	else
+	{
 		root = new Node(value);
+		root->parent = NIL;
+		root->left = NIL;
+		root->right = NIL;
+		root->setColor(color::BLACK);
+	}
 }
 void BST::Travel()
 {
@@ -45,14 +65,14 @@ void BST::Delete(Node* ref)
 }
 void BST::Successor(int value)
 {
-	if (this->IsEmpty())
+	if (IsEmpty())
 		std::cout << "Tree has not been initialized";
 	else
 		findSuccessor(root, value);
 }
 void BST::Predecessor(int value)
 {
-	if (this->IsEmpty())
+	if (IsEmpty())
 		std::cout << "Tree has not been initialized";
 	else
 		findPredecessor(root, value);
@@ -62,7 +82,7 @@ void BST::Max()
 	if (IsEmpty())
 		std::cout << "Tree has not been initialized\n";
 	else
-		Node* a = findMax(root);
+		Node* result = findMax(root);
 }
 void BST::Min()
 {
@@ -79,7 +99,7 @@ Node* BST::ReturnRoot()
 //private method
 void BST::travel(Node*root) //travel inorder -> return sorted order
 {
-	if (!root)
+	if (root == NIL)
 		return;
 	else
 	{
@@ -90,36 +110,94 @@ void BST::travel(Node*root) //travel inorder -> return sorted order
 }
 void BST::insertNode(Node* root, int value)
 {
+	Node *newNode = new Node(value);
+	newNode->setColor(color::RED);
+	newNode->right = NIL;
+	newNode->left = NIL;
 	if (value >= root->key)
 	{
-		if (!root->right)
+		if (root->right == NIL)
 		{
-			root->right = new Node(value);
-			root->right->parent = root;
+			root->right = newNode;
+			newNode->parent = root;
 		}
 		else
 			insertNode(root->right, value);
 	}
 	else
 	{
-		if (!root->left)
+		if (root->left == NIL)
 		{
-			root->left = new Node(value);
-			root->left->parent = root;
+			root->left = newNode;
+			newNode->parent = root;
 		}
 		else
 			insertNode(root->left, value);
 	}
-
+	insertFixUp(newNode);
+}
+void BST::insertFixUp(Node* currentNode)
+{
+	while (currentNode->parent->getColor() == color::RED)
+	{
+		if (currentNode->parent = currentNode->parent->parent->left)
+		{
+			Node *uncle = currentNode->parent->parent->right;
+			//Case 1: uncle is red
+			if (uncle->getColor() == color::RED)
+			{
+				uncle->setColor(color::BLACK);
+				currentNode->parent->setColor(color::BLACK);
+				currentNode->parent->parent->setColor(color::RED);
+				currentNode = currentNode->parent->parent;
+			}
+			else
+			{
+				//Case 2 : uncle is black and need-to-fix node is right child
+				if (currentNode == currentNode->parent->right)
+				{
+					currentNode = currentNode->parent;
+					leftRotate(currentNode);
+				}
+				//Case 3 : uncle is black and need-to-fix node is left child
+				currentNode->parent->setColor(color::BLACK);
+				currentNode->parent->parent->setColor(color::RED);
+				rightRotate(currentNode->parent->parent);
+			}
+		}
+		else
+		{
+			Node *uncle = currentNode->parent->parent->left;
+			//Case 1: uncle is red
+			if (uncle->getColor() == color::RED)
+			{
+				uncle->setColor(color::BLACK);
+				currentNode->parent->setColor(color::BLACK);
+				currentNode->parent->parent->setColor(color::RED);
+				currentNode = currentNode->parent->parent;
+			}
+			else
+			{
+				//Case 2 : uncle is black and need-to-fix node is right child
+				if (currentNode == currentNode->parent->left)
+				{
+					currentNode = currentNode->parent;
+					rightRotate(currentNode);
+				}
+				//Case 3 : uncle is black and need-to-fix node is left child
+				currentNode->parent->setColor(color::BLACK);
+				currentNode->parent->parent->setColor(color::RED);
+				leftRotate(currentNode->parent->parent);
+			}
+		}
+		root->setColor(color::BLACK);
+	}
 }
 void BST::findSuccessor(Node* root, int value)
 {
 	Node*current = searchNode(root, value);
-	if (!current)
-	{
-		std::cout << "No found matched";
+	if (current == NIL)
 		return;
-	}
 	if (value == (findMax(root)->key))
 	{
 		std::cout << "This is the largest element" << std::endl;
@@ -127,14 +205,14 @@ void BST::findSuccessor(Node* root, int value)
 	}
 	else
 	{
-		if (!current->right)
+		if (current->right == NIL)
 		{
 			Node *temp = current->parent;
-			if (!temp)
+			if (temp == NIL)
 				std::cout << "That is the only element" << std::endl;
 			else
 			{
-				while (temp->parent != NULL && current != temp->left)
+				while (temp->parent != NIL && current != temp->left)
 				{
 					current = temp;
 					temp = temp->parent;
@@ -152,11 +230,8 @@ void BST::findSuccessor(Node* root, int value)
 void BST::findPredecessor(Node* root, int value)
 {
 	Node*current = searchNode(root, value);
-	if (!current)
-	{
-		std::cout << "No found matched";
+	if (current == NIL)
 		return;
-	}
 	if (value == (findMin(root)->key))
 	{
 		std::cout << "This is the smallest element" << std::endl;
@@ -164,14 +239,14 @@ void BST::findPredecessor(Node* root, int value)
 	}
 	else
 	{
-		if (!current->left)
+		if (current->left == NIL)
 		{
 			Node *temp = current->parent;
 			if (!temp)
 				std::cout << "That is the only element" << std::endl;
 			else
 			{
-				while (temp->parent != NULL && current != temp->right)
+				while (temp->parent != NIL && current != temp->right)
 				{
 					current = temp;
 					temp = temp->parent;
@@ -188,7 +263,7 @@ void BST::findPredecessor(Node* root, int value)
 }
 Node* BST::searchNode(Node* root, int value)
 {
-	if (!root)
+	if (root == NIL)
 	{
 		std::cout << "No found matched\n";
 		return root;
@@ -267,19 +342,41 @@ void BST::deleteNode(Node* current)
 }
 Node* BST::findMax(Node* root)
 {
-	if (root->right)
+	if (root->right != NIL)
 		findMax(root->right);
 	else
-	{
 		return root;
-	}
 }
 Node* BST::findMin(Node* root)
 {
-	if (root->left)
+	if (root->left != NIL)
 		findMin(root->left);
 	else
-	{
 		return root;
-	}
+}
+void BST::leftRotate(Node* sample)
+{
+	Node *rightChild = sample->right;
+	sample->right = rightChild->left;
+	rightChild->left->parent = sample;
+	if (sample->parent->left == sample)
+		sample->parent->left = rightChild;
+	else
+		sample->parent->right = rightChild;
+	rightChild->parent = sample->parent;
+	sample->parent = rightChild;
+	rightChild->left = sample;
+}
+void BST::rightRotate(Node* sample)
+{
+	Node *leftChild = sample->left;
+	sample->left = leftChild->right;
+	leftChild->right->parent = sample;
+	if (sample->parent->right == sample)
+		sample->parent->right = leftChild;
+	else
+		sample->parent->left = leftChild;
+	leftChild->parent = sample->parent;
+	sample->parent = leftChild;
+	leftChild->right = sample;
 }

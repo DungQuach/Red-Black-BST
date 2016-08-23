@@ -12,7 +12,14 @@ private:
 	void deleteNode(Node*);
 	Node* findMax(Node*);
 	Node* findMin(Node*);
+	void insertFixUp(Node*);
+	void deleteFixUp(Node*);
 public:
+	int HeightofTree(Node*);
+	void leftRotate(Node*);
+	void rightRotate(Node*);
+	BST();
+	Node* NIL;
 	void ClearTree();
 	Node* ReturnRoot();
 	bool IsEmpty();
