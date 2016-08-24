@@ -1,16 +1,17 @@
 #include "BST.h"
 #include "Node.h"
 #include <iostream>
-#include <algorithm>
 #include "color.h"
 
 //public method
-int BST::HeightofTree(Node* root)
+void BST::HeightofTree()
 {
-	if (root == NIL)
-		return 0;
+	if (IsEmpty())
+		std::cout << "No tree init\n";
 	else
-		return 1 + std::max_element(HeightofTree(root->right), HeightofTree(root->left));
+	{
+		std::cout <<"The height of tree is "<< heightofTree(root)<<std::endl;
+	}
 }
 BST::BST()
 {
@@ -97,6 +98,20 @@ Node* BST::ReturnRoot()
 }
 
 //private method
+int BST::heightofTree(Node *current)
+{
+	if (current == NIL)
+		return 0;
+	else
+	{
+		int subtreeRight = heightofTree(current->right);
+		int subtreeLeft = heightofTree(current->left);
+		if(subtreeLeft > subtreeRight)
+			return (1 + subtreeLeft);
+		else
+			return (1 + subtreeRight);
+	}
+}
 void BST::travel(Node*root) //travel inorder -> return sorted order
 {
 	if (root == NIL)
@@ -104,7 +119,10 @@ void BST::travel(Node*root) //travel inorder -> return sorted order
 	else
 	{
 		travel(root->left);
-		std::cout << root->key << " ";
+		if(root->getColor()==color::RED)
+			std::cout << root->key << " Color: RED" <<std::endl;
+		else
+			std::cout << root->key << " Color: BLACK" << std::endl;
 		travel(root->right);
 	}
 }
@@ -120,6 +138,7 @@ void BST::insertNode(Node* root, int value)
 		{
 			root->right = newNode;
 			newNode->parent = root;
+			insertFixUp(newNode);
 		}
 		else
 			insertNode(root->right, value);
@@ -130,17 +149,17 @@ void BST::insertNode(Node* root, int value)
 		{
 			root->left = newNode;
 			newNode->parent = root;
+			insertFixUp(newNode);
 		}
 		else
 			insertNode(root->left, value);
 	}
-	insertFixUp(newNode);
 }
 void BST::insertFixUp(Node* currentNode)
 {
 	while (currentNode->parent->getColor() == color::RED)
 	{
-		if (currentNode->parent = currentNode->parent->parent->left)
+		if (currentNode->parent == currentNode->parent->parent->left)
 		{
 			Node *uncle = currentNode->parent->parent->right;
 			//Case 1: uncle is red
@@ -178,13 +197,13 @@ void BST::insertFixUp(Node* currentNode)
 			}
 			else
 			{
-				//Case 2 : uncle is black and need-to-fix node is right child
+				//Case 2 : uncle is black and need-to-fix node is left child
 				if (currentNode == currentNode->parent->left)
 				{
 					currentNode = currentNode->parent;
 					rightRotate(currentNode);
 				}
-				//Case 3 : uncle is black and need-to-fix node is left child
+				//Case 3 : uncle is black and need-to-fix node is right child
 				currentNode->parent->setColor(color::BLACK);
 				currentNode->parent->parent->setColor(color::RED);
 				leftRotate(currentNode->parent->parent);

@@ -20,6 +20,7 @@ void main()
 		std::cout << "7. Return root\n";
 		std::cout << "8. Delete the value\n";
 		std::cout << "9. Clear the tree\n";
+		std::cout << "10. The height of tree\n";
 		std::cout << "Your choice: ";
 		std::cin >> select;
 		std::cout << std::endl;
@@ -105,6 +106,11 @@ void main()
 			control->ClearTree();
 			if (control->IsEmpty())
 				std::cout << "Cleared" << std::endl;
+			break;
+		}
+		case 10:
+		{
+			control->HeightofTree();
 			break;
 		}
 
