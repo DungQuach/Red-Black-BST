@@ -18,7 +18,7 @@ void main()
 		std::cout << "5. Find the successor\n";
 		std::cout << "6. Find the predecessor\n";
 		std::cout << "7. Return root\n";
-		std::cout << "8. Delete the value\n";
+		std::cout << "8. The height of tree\n";
 		std::cout << "9. Clear the tree\n";
 		std::cout << "Your choice: ";
 		std::cin >> select;
@@ -41,12 +41,9 @@ void main()
 		case 2:
 		{
 			control->Travel();
-		}
-		case 3:
-		{
-
 			break;
 		}
+		
 		case 4:
 		{
 			int value;
@@ -80,7 +77,7 @@ void main()
 				std::cout << "Root is " << result->key << std::endl;
 			break;
 		}
-		case 8:
+		case 3:
 		{
 			if (control->IsEmpty())
 				std::cout << "No element for deletion\n";
@@ -91,11 +88,11 @@ void main()
 				std::cin >> value;
 				{
 					Node* ref = control->Search(value);
-					if (!ref)
+					if (ref == control->NIL)
 						std::cout << "No found matched\n";
 					else
 						control->Delete(ref);
-					std::cout << "Removed Done\n";
+					std::cout << "Deletion Done\n";
 				}
 			}
 			break;
@@ -105,6 +102,11 @@ void main()
 			control->ClearTree();
 			if (control->IsEmpty())
 				std::cout << "Cleared" << std::endl;
+			break;
+		}
+		case 8:
+		{
+			control->HeightofTree();
 			break;
 		}
 

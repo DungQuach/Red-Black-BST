@@ -14,8 +14,9 @@ private:
 	Node* findMin(Node*);
 	void insertFixUp(Node*);
 	void deleteFixUp(Node*);
+	int heightofTree(Node*);
 public:
-	int HeightofTree(Node*);
+	void HeightofTree();
 	void leftRotate(Node*);
 	void rightRotate(Node*);
 	BST();
