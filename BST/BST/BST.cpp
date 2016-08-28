@@ -409,3 +409,16 @@ void BST::rightRotate(Node* sample)
 	sample->parent = leftChild;
 	leftChild->right = sample;
 }
+void BST::transplant(Node* deletedNode,Node* replacedNode)
+{
+	if (deletedNode->parent == NIL)
+		root = replacedNode;
+	else
+	{
+		if(deletedNode == deletedNode->parent->left)
+			deletedNode->parent->left = replacedNode;
+		else
+			deletedNode->parent->right = replacedNode;
+	}
+	replacedNode->parent = deletedNode -> parent;
+}
