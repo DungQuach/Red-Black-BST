@@ -3,6 +3,7 @@
 class BST
 {
 private:
+	void transplant(Node*,Node*);
 	void insertNode(Node*, int);
 	void travel(Node*);
 	Node* root;
