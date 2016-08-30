@@ -305,57 +305,123 @@ Node* BST::searchNode(Node* root, int value)
 }
 void BST::deleteNode(Node* current)
 {
-	Node *parentCurrent = current->parent;
-	if ((current->right == NIL) && (current->left == NIL)) //deleted node is child
+	if ((current->left == NIL) || (current->right == NIL)) //deleted node has at most 1 non-leaf child
 	{
-		if (parentCurrent == NIL) //the tree has 1 element
-			ClearTree();
+		Node *child = current->right;
+		if (child == NIL)
+			child = current->left;
+		if (current->getColor() == color::RED ) //current is red,child is black-> replace current with child
+			transplant(current, child);
 		else
 		{
-			if (current == parentCurrent->left)
-				parentCurrent->left = NIL;
+			if (child->getColor() == color::RED) //current is black,child is red-> replace current with child, recolor child with black
+			{
+				child->setColor(color::BLACK);
+				transplant(current, child);
+			}
 			else
-				parentCurrent->right = NIL;
-		}
+			{
+				transplant(current, child); //current is black,child is black -> replace current with child and call fix up
+				deleteFixUp(child);
+			}
+		}					
 	}
-	else
+	else //deleted node has 2 children
 	{
-		if ((current->left == NIL) || (current->right == NIL)) //deleted node has 1 child
+		Node*pre = findMax(current->left);
+		int temp = pre->key;
+		pre->key = current->key;
+		current->key = temp;
+		deleteNode(pre);
+	}
+}
+
+void BST::deleteFixUp(Node* current)
+{
+	//current is doubly black
+	bool flag = true;
+	while (flag)
+	{
+		if (current == root)
+			flag = false;
+		else
 		{
-			Node *child = current->right;
-			if (child == NIL)
-				child = current->left;
-			if (parentCurrent != NIL) //check whether it is root or not
+			if (current->parent->left = current)
 			{
-				if (current == parentCurrent->left)
+				Node *sibling = current->parent->right;
+				if (sibling->getColor() == color::BLACK) //sibling is black
 				{
-					parentCurrent->left = child;
-					child->parent = parentCurrent;
-					return;
+					if ((sibling->right->getColor() == color::BLACK) && (sibling->left->getColor() == color::BLACK)) //children of sibling are black
+					{
+						sibling->setColor(color::RED);
+						current = current->parent;
+					}
+					else
+					{
+						if ((sibling->right->getColor() == color::BLACK) && (sibling->left->getColor() == color::RED)) //right child is black,left child is red
+						{
+							color temp = sibling->getColor();
+							sibling->setColor(sibling->left->getColor());
+							sibling->left->setColor(temp);
+							rightRotate(sibling);
+						}
+						else//now right child of sibling is confirmed red
+						{
+							sibling->right->setColor(color::BLACK);
+							color temp = current->parent->getColor();
+							current->parent->setColor(sibling->getColor());
+							sibling->setColor(temp);
+							leftRotate(current->parent);
+							flag = false;
+						}
+					}
 				}
-				else
+				else //sibling is red ->both children are black
 				{
-					parentCurrent->right = child;
-					child->parent = parentCurrent;
-					return;
+					color temp = current->parent->getColor();
+					current->parent->setColor(sibling->getColor());
+					sibling->setColor(temp);
+					leftRotate(current->parent);
 				}
 			}
 			else
 			{
-				int temp = child->key;
-				child->key = root->key;
-				root->key = temp;
-				deleteNode(child);
+				Node *sibling = current->parent->left;
+				if (sibling->getColor() == color::BLACK) //sibling is black
+				{
+					if ((sibling->right->getColor() == color::BLACK) && (sibling->left->getColor() == color::BLACK)) //children of sibling are black
+					{
+						sibling->setColor(color::RED);
+						current = current->parent;
+					}
+					else
+					{
+						if ((sibling->left->getColor() == color::BLACK) && (sibling->right->getColor() == color::RED)) //left child is black,right child is red
+						{
+							color temp = sibling->getColor();
+							sibling->setColor(sibling->right->getColor());
+							sibling->right->setColor(temp);
+							leftRotate(sibling);
+						}
+						else//now left child of sibling is confirmed red
+						{
+							sibling->left->setColor(color::BLACK);
+							color temp = current->parent->getColor();
+							current->parent->setColor(sibling->getColor());
+							sibling->setColor(temp);
+							rightRotate(current->parent);
+							flag = false;
+						}
+					}
+				}
+				else //sibling is red ->both children are black
+				{
+					color temp = current->parent->getColor();
+					current->parent->setColor(sibling->getColor());
+					sibling->setColor(temp);
+					rightRotate(current->parent);
+				}
 			}
-
-		}
-		else //deleted node has 2 children
-		{
-			Node*pre = findMax(current->left);
-			int temp = pre->key;
-			pre->key = current->key;
-			current->key = temp;
-			deleteNode(pre);
 		}
 	}
 }
@@ -411,7 +477,7 @@ void BST::rightRotate(Node* sample)
 }
 void BST::transplant(Node* deletedNode,Node* replacedNode)
 {
-	if (deletedNode->parent == NIL)
+	if (deletedNode->parent == NIL)//deleted node is root
 		root = replacedNode;
 	else
 	{
